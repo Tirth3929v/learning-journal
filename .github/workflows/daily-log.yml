@@ -1,0 +1,28 @@
+name: AutoStudy-Logger
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # Runs daily at 08:00 UTC
+  workflow_dispatch:      # Allows you to trigger it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update-log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Append to log
+        run: |
+          echo "$(date) - Studied AI concepts today" >> daily_notes.md
+          
+      - name: Commit and push changes
+        run: |
+          git config user.name "AutoStudy-Bot"
+          git config user.email "bot@github.com"
+          git add daily_notes.md
+          git commit -m "docs: update daily learning log"
+          git push
